@@ -1,5 +1,6 @@
 from aocd import get_data
 from aocd.post import submit
+from collections import Counter
 
 
 def main(testing: bool = False, part: int = 1):
@@ -28,8 +29,10 @@ def main(testing: bool = False, part: int = 1):
        
             answer += abs(minimum_left - minimum_right)
     elif part == 2:
+        counter = Counter(right_list)
+        print(counter)
         for number in left_list:
-            answer += number * right_list.count(number)
+            answer += number * counter[number]
 
     if testing:
         print(answer)
@@ -38,4 +41,4 @@ def main(testing: bool = False, part: int = 1):
 
 
 if __name__ == '__main__':
-    main(False, 2)
+    main(True, 2)
