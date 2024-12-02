@@ -3,10 +3,10 @@ from aocd.post import submit
 
 
 def main(testing: bool = False):
-    if testing:
+    if not testing:
         data = get_data(
             day=1,
-            year=2023
+            year=2024
         ).split('\n')
     else:
         data = open('test').read().split('\n')
