@@ -1,0 +1,15 @@
+{
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+  ],
+
+  "defineConstant": {
+    "DEBUG": true
+  },
+
+  "reportMissingImports": "error",
+  "reportMissingTypeStubs": false,
+  "venvPath": "/mnt/c/Users/bojan/PycharmProjects/aoc-2024/",
+  "venv": "linux-venv"
+}
