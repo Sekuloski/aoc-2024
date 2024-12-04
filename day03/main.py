@@ -15,7 +15,7 @@ def main(testing: bool = False):
     answer = 0
     enabled = True
     for match in re.findall(r"(mul\([0-9]+,[0-9]+\))|(don't\(\))|(do\(\))", data):
-        match: str
+        match: tuple
         mul, dont, do = match
         if not mul and not dont and not do:
             continue
