@@ -11,6 +11,7 @@ def main(testing: bool = False):
     else:
         data = open('test').read().split('\n')
 
+    data = list(filter(None, data))
     print(data)
     answer = 0
 
