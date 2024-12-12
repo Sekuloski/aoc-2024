@@ -1,5 +1,30 @@
+from collections import defaultdict
+
 from aocd import get_data
 from aocd.post import submit
+
+
+def get_count(stone, n, i, entries):
+    if stone in entries[i]:
+        return entries[i][stone]
+
+    if i >= n:
+        return 1
+
+    if stone == '0':
+        count = get_count('1', n, i + 1, entries)
+        entries[i][stone] = count
+
+    elif len(stone) % 2 == 0:
+        count = get_count(str(int(stone[len(stone) // 2:])), n, i + 1, entries)
+        count += get_count(str(int(stone[:len(stone) // 2])), n, i + 1, entries)
+        entries[i][stone] = count
+
+    else:
+        count = get_count(str(int(stone) * 2024), n, i + 1, entries)
+        entries[i][stone] = count
+
+    return count
 
 
 def main(testing: bool = False):
@@ -13,25 +38,16 @@ def main(testing: bool = False):
 
     data = list(filter(None, data))
 
-    for step in range(25):
-        next_inserts = []
-        for index in range(len(data)):
-            stone = data[index]
-            if stone == '0':
-                data[index] = '1'
-
-            elif len(stone) % 2 == 0:
-                data[index] = str(int(stone[len(stone) // 2:]))
-                next_inserts.append((index + len(next_inserts), str(int(stone[:len(stone) // 2]))))
-            else:
-                data[index] = str(int(stone) * 2024)
-        for insert in next_inserts:
-            data.insert(insert[0], insert[1])
+    steps = 26
+    entries = defaultdict(dict)
+    for index in range(len(data)):
+        stone = data[index]
+        get_count(stone, steps, 1, entries)
 
     if testing:
-        print(len(data))
+        print(sum(entries[1].values()))
     else:
-        submit(len(data))
+        submit(sum(entries[1].values()))
 
 
 if __name__ == '__main__':
