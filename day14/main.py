@@ -1,4 +1,7 @@
 import math
+from collections import defaultdict
+from itertools import groupby
+from operator import itemgetter
 
 from aocd import get_data
 from aocd.post import submit
@@ -46,6 +49,7 @@ class Robot:
 
         return None
 
+
 def main(testing: bool = False):
     if not testing:
         data = get_data(
@@ -65,9 +69,16 @@ def main(testing: bool = False):
         x_v, y_v = v.split('=')[1].split(',')
         robots.append(Robot(int(start_x), int(start_y), int(x_v), int(y_v)))
 
-    for i in range(100):
+    while True:
+        current_positions = defaultdict(list)
         for robot in robots:
             robot.move()
+            current_positions[robot.y].append(robot.x)
+        for y, values in current_positions.items():
+            for k, g in groupby(enumerate(values), lambda ix: ix[0] - ix[1]):
+                print(map(itemgetter(1), g))
+        break
+
 
     quadrants = [0, 0, 0, 0]
 
@@ -85,4 +96,4 @@ def main(testing: bool = False):
 
 
 if __name__ == '__main__':
-    main(False)
+    main(True)
