@@ -40,21 +40,48 @@ def main(testing: bool = False):
         data = open('test').read().split('\n')
 
     data = list(filter(None, data))
-    obstacles = [tuple(map(int, x.split(','))) for x in data[:1024]]
+    counter = 0
     positions = []
     for i in range(71):
         positions.append([])
         for y in range(71):
-            if (y, i) in obstacles:
-                positions[i].append('#')
-            else:
-                positions[i].append('.')
+            positions[i].append('.')
 
-    answer = dijkstra(positions)
+    while True:
+        obstacles = [tuple(map(int, x.split(','))) for x in data[:1024 + counter]]
+        for obstacle in obstacles:
+            positions[obstacle[1]][obstacle[0]] = '#'
+
+        answer = dijkstra(positions)
+        if answer:
+            counter += 100
+            continue
+        else:
+            break
+
+    positions = []
+    for i in range(71):
+        positions.append([])
+        for y in range(71):
+            positions[i].append('.')
+
+    for c in range(counter - 100, counter):
+        obstacles = [tuple(map(int, x.split(','))) for x in data[:1024 + c]]
+        for obstacle in obstacles:
+            positions[obstacle[1]][obstacle[0]] = '#'
+
+        answer = dijkstra(positions)
+        if answer:
+            print(answer)
+            continue
+        else:
+            answer = data[1024 + c - 1]
+            break
 
     if testing:
         print(answer)
     else:
+        print(answer)
         submit(answer)
 
 
