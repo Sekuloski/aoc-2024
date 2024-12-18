@@ -69,16 +69,29 @@ def main(testing: bool = False):
         x_v, y_v = v.split('=')[1].split(',')
         robots.append(Robot(int(start_x), int(start_y), int(x_v), int(y_v)))
 
-    while True:
-        current_positions = defaultdict(list)
+    neighbors_counter = []
+    max_neighbors = 0
+    for _ in range(10000):
+        current_positions = []
         for robot in robots:
             robot.move()
-            current_positions[robot.y].append(robot.x)
-        for y, values in current_positions.items():
-            for k, g in groupby(enumerate(values), lambda ix: ix[0] - ix[1]):
-                print(map(itemgetter(1), g))
-        break
+            current_positions.append((robot.x, robot.y))
+        neighbors = 0
+        for x, y in current_positions:
+            for x2, y2 in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if (x2, y2) in current_positions:
+                    neighbors += 1
 
+        neighbors_counter.append(neighbors)
+        if neighbors > max_neighbors:
+            max_neighbors = neighbors
+            for x in range(100):
+                for y in range(101):
+                    if (x, y) in current_positions:
+                        print("*", end="")
+                    else:
+                        print(".", end="")
+                print("")
 
     quadrants = [0, 0, 0, 0]
 
@@ -88,12 +101,13 @@ def main(testing: bool = False):
             quadrants[quadrant] += 1
 
     answer = math.prod(quadrants)
-    print(quadrants, len(robots))
+    answer = neighbors_counter.index(max(neighbors_counter)) + 1
     if testing:
         print(answer)
     else:
+        print(answer)
         submit(answer)
 
 
 if __name__ == '__main__':
-    main(True)
+    main(False)
