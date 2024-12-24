@@ -15,9 +15,8 @@ def main(testing: bool = False):
     print(data)
     answer = 0
 
-    if testing:
-        print(answer)
-    else:
+    print(answer)
+    if not testing:
         submit(answer)
 
 
