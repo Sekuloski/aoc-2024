@@ -1,4 +1,5 @@
 from collections import defaultdict
+from copy import copy
 
 from aocd import get_data
 from aocd.post import submit
@@ -14,35 +15,43 @@ def main(testing: bool = False):
         data = open('test').read().split('\n')
 
     data = list(filter(None, data))
-    connections: dict[str, list[str]] = defaultdict(list)
+    connections: list[list[str]] = []
+    computers = []
+
     for line in data:
-        comps = line.split('-')
+        connections.append(sorted(line.split('-')))
+        computers.extend(line.split('-'))
 
-        connections[comps[0]].append(comps[1])
-        if comps[0] not in connections[comps[0]]:
-            connections[comps[0]].append(comps[0])
+    computers = list(set(computers))
+    original_connections = copy(connections)
 
-        connections[comps[1]].append(comps[0])
-        if comps[1] not in connections[comps[1]]:
-            connections[comps[1]].append(comps[1])
+    print(computers, connections)
+    connection_found = True
+    while True:
+        if not connection_found:
+            break
 
-    three_conns: set[tuple[str, ...]] = set()
-    for item, connection in connections.items():
-        for comp in connection:
-            comp_connections: list[str] = connections[comp]
-            items = set(list(set(connection).intersection(comp_connections)))
-            for c in items:
-                final = tuple(set(sorted((item, comp, c))))
-                if len(final) == 3:
-                    three_conns.add(final)
+        connection_found = False
+        for connection in connections:
+            for new_computer in computers:
+                if new_computer in connection:
+                    continue
 
-    print(connections)
-    print(three_conns)
-    answer = [x for x in three_conns if any([y for y in x if str(y).startswith('t')])]
+                add_computer = True
+                for current_computer in connection:
+                    if sorted([new_computer, current_computer]) not in original_connections:
+                        add_computer = False
+                        break
 
-    print(len(answer), answer)
+                if add_computer:
+                    connection.append(new_computer)
+                    connection_found = True
+
+    connections.sort(key=len, reverse=True)
+    answer = ','.join(sorted(connections[0]))
+    print(answer)
     if not testing:
-        submit(len(answer), day=23, year=2024)
+        submit(answer, day=23, year=2024)
 
 
 if __name__ == '__main__':
